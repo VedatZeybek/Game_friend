@@ -1,0 +1,146 @@
+/* Genel layout */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  font-family: "Inter", sans-serif;
+  background: #f8f9fc;
+}
+
+/* Üst bar */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #4a90e2;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.logout-btn {
+  padding: 0.5rem 1.2rem;
+  background: #e74c3c;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #c0392b;
+}
+
+/* İçerik */
+.dashboard-content {
+  display: flex;
+  gap: 1.5rem;
+  flex: 1;
+  padding: 1.5rem;
+}
+
+/* Ortak card stili */
+.card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1rem;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.card h2 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+/* Arkadaş listesi */
+.friends-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.friends-list li {
+	padding: 0.5rem;
+	margin-bottom: 0.4rem;
+	border-radius: 6px;
+	cursor: pointer;
+	background: #767676;
+	transition: background 0.2s;
+}
+
+.friends-list li:hover {
+  background: #9e9e9e;
+}
+
+.friends-list .active {
+  background: #dfe9ff;
+  font-weight: bold;
+}
+
+/* Mesaj kutuları */
+.messages-box {
+  flex: 1;
+  border: 1px solid #000000;
+  border-radius: 6px;
+  padding: 0.7rem;
+  margin-bottom: 0.5rem;
+  overflow-y: auto;
+  background: #c0aeff;
+}
+
+.messages-box p {
+  margin: 0.4rem 0;
+}
+
+.messages-box b {
+  color: #4a90e2;
+}
+
+/* Input + buton */
+.message-input {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.message-input input {
+  flex: 1;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.message-input button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  background: #4a90e2;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.message-input button:hover {
+  background: #357abd;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dashboard-content {
+    flex-direction: column;
+  }
+}
