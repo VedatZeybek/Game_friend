@@ -15,6 +15,7 @@ export default function Dashboard() {
   const [dmMessages, setDmMessages] = useState([]);
 
   const [dmUser, setDmUser] = useState("");
+  const [activeView, setActiveView] = useState("global"); // "global" or "friends"
 
   const socketRef = useRef(null);
   const publicMessagesEndRef = useRef(null);
@@ -23,18 +24,12 @@ export default function Dashboard() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  // Otomatik scroll fonksiyonu
+  // Manuel scroll fonksiyonu - sadece kullanıcı mesaj gönderdiğinde
   const scrollToBottom = (ref) => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(() => {
-    scrollToBottom(publicMessagesEndRef);
-  }, [publicMessages]);
-
-  useEffect(() => {
-    scrollToBottom(dmMessagesEndRef);
-  }, [dmMessages]);
+  // Yeni mesaj geldiğinde otomatik scroll YOK - kullanıcı istediği yerde kalabilir
 
   // Socket bağlantısı
   useEffect(() => {
@@ -43,10 +38,9 @@ export default function Dashboard() {
       return;
     }
 
-    // Socket bağlantısı kur
     socketRef.current = io("http://localhost:5000", {
       auth: { token },
-      transports: ['websocket', 'polling']
+      transports: ["websocket", "polling"],
     });
 
     socketRef.current.on("connect", () => {
@@ -57,7 +51,6 @@ export default function Dashboard() {
       console.error("Socket connection error:", error);
     });
 
-    // Cleanup
     return () => {
       if (socketRef.current) {
         socketRef.current.disconnect();
@@ -74,9 +67,12 @@ export default function Dashboard() {
         });
         setUser(userRes.data);
 
-        const friendsRes = await axios.get("http://localhost:5000/api/users/friends", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const friendsRes = await axios.get(
+          "http://localhost:5000/api/users/friends",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setFriends(friendsRes.data);
       } catch (err) {
         console.error("User data fetch error:", err);
@@ -98,17 +94,21 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        // Public mesajları al
-        const publicRes = await axios.get("http://localhost:5000/api/messages/public", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const publicRes = await axios.get(
+          "http://localhost:5000/api/messages/public",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setPublicMessages(publicRes.data);
 
-        // DM mesajları al (eğer DM kullanıcısı seçiliyse)
         if (dmUser) {
-          const dmRes = await axios.get(`http://localhost:5000/api/messages/dm/${dmUser}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const dmRes = await axios.get(
+            `http://localhost:5000/api/messages/dm/${dmUser}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
           setDmMessages(dmRes.data);
         }
       } catch (err) {
@@ -127,20 +127,20 @@ export default function Dashboard() {
 
     const handleReceiveMessage = (msg) => {
       console.log("Received message:", msg);
-      
+
       if (msg.isPublic) {
         setPublicMessages((prev) => {
-          // Aynı mesajın tekrar eklenmesini engelle
-          const exists = prev.some(m => m._id === msg._id);
+          const exists = prev.some((m) => m._id === msg._id);
           if (exists) return prev;
           return [...prev, msg];
         });
       } else {
-        // DM mesajları - gönderen veya alıcı aktif kullanıcıysa göster
-        if ((msg.sender._id === dmUser || msg.sender._id === user?._id) && 
-            (msg.receiverId === dmUser || msg.receiverId === user?._id)) {
+        if (
+          (msg.sender._id === dmUser || msg.sender._id === user?._id) &&
+          (msg.receiverId === dmUser || msg.receiverId === user?._id)
+        ) {
           setDmMessages((prev) => {
-            const exists = prev.some(m => m._id === msg._id);
+            const exists = prev.some((m) => m._id === msg._id);
             if (exists) return prev;
             return [...prev, msg];
           });
@@ -176,24 +176,30 @@ export default function Dashboard() {
     };
 
     try {
-      const response = await axios.post("http://localhost:5000/api/messages/send", msgData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      
+      const response = await axios.post(
+        "http://localhost:5000/api/messages/send",
+        msgData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
       console.log("Public message sent:", response.data);
-      
-      // Mesajı hemen ekle
       setPublicMessages((prev) => [...prev, response.data]);
-      
-      // Socket'e gönder
+
       if (socketRef.current) {
         socketRef.current.emit("sendMessage", response.data);
       }
-      
+
       setPublicMessage("");
+      
+      // Sadece kendi mesajını gönderince scroll yap
+      setTimeout(() => scrollToBottom(publicMessagesEndRef), 100);
     } catch (err) {
       console.error("Send public message error:", err);
-      alert("Mesaj gönderilemedi! " + (err.response?.data?.message || err.message));
+      alert(
+        "Mesaj gönderilemedi! " + (err.response?.data?.message || err.message)
+      );
     }
   };
 
@@ -209,23 +215,29 @@ export default function Dashboard() {
     };
 
     try {
-      const response = await axios.post("http://localhost:5000/api/messages/send", msgData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      
+      const response = await axios.post(
+        "http://localhost:5000/api/messages/send",
+        msgData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
       console.log("DM sent:", response.data);
-      
-      // Mesajı hemen ekle
       setDmMessages((prev) => [...prev, response.data]);
-      
-      // Socket'e gönder
+
       if (socketRef.current) {
         socketRef.current.emit("sendMessage", response.data);
       }
       setDmMessage("");
+      
+      // Sadece kendi mesajını gönderince scroll yap
+      setTimeout(() => scrollToBottom(dmMessagesEndRef), 100);
     } catch (err) {
       console.error("Send DM error:", err);
-      alert("Mesaj gönderilemedi! " + (err.response?.data?.message || err.message));
+      alert(
+        "Mesaj gönderilemedi! " + (err.response?.data?.message || err.message)
+      );
     }
   };
 
@@ -240,7 +252,7 @@ export default function Dashboard() {
         { friendId: friendId.trim() },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+
       setFriends((prev) => [...prev, response.data.friend]);
       setFriendId("");
       alert("Arkadaş eklendi!");
@@ -253,12 +265,13 @@ export default function Dashboard() {
   // DM kullanıcısı seçme
   const handleSelectDM = (friend) => {
     setDmUser(friend._id);
-    setDmMessages([]); // Önceki mesajları temizle
+    setDmMessages([]);
+    setActiveView("global");
   };
 
   // Enter tuşu ile mesaj gönderme
   const handleKeyPress = (e, callback) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       callback(e);
     }
@@ -266,107 +279,172 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
-      {/* Üst bar */}
-      <div className="dashboard-header">
-        <h1>Welcome {user?.username || "User"}</h1>
-        <button className="logout-btn" onClick={handleLogout}>
-          Quit
-        </button>
+      {/* Sidebar */}
+      <div className="sidebar">
+        <div className="sidebar-header">
+          <h1>GameChat</h1>
+          <div className="user-info">
+            <span className="user-status"></span>
+            <span>{user?.username || "User"}</span>
+          </div>
+        </div>
+
+        <div className="sidebar-menu">
+          <div
+            className={`menu-item ${activeView === "global" ? "active" : ""}`}
+            onClick={() => setActiveView("global")}
+          >
+            <span className="menu-icon">🌍</span>
+            <span>Global Chat</span>
+          </div>
+          <div
+            className={`menu-item ${activeView === "friends" ? "active" : ""}`}
+            onClick={() => setActiveView("friends")}
+          >
+            <span className="menu-icon">👥</span>
+            <span>Friends</span>
+          </div>
+          {dmUser && (
+            <div
+              className={`menu-item ${activeView === "dm" ? "active" : ""}`}
+              onClick={() => setActiveView("dm")}
+            >
+              <span className="menu-icon">💬</span>
+              <span>
+                DM: {friends.find((f) => f._id === dmUser)?.username}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="sidebar-footer">
+          <button className="logout-btn" onClick={handleLogout}>
+            🚪 Logout
+          </button>
+        </div>
       </div>
 
-      {/* İçerik */}
-      <div className="dashboard-content">
-        {/* Arkadaş Listesi */}
-        <div className="card">
-          <h2>Friends</h2>
-          <ul className="friends-list">
-            {friends.length === 0 ? (
-              <li className="empty">No friends yet</li>
-            ) : (
-              friends.map((f) => (
-                <li
-                  key={f._id}
-                  className={dmUser === f._id ? "active" : ""}
-                  onClick={() => handleSelectDM(f)}
-                >
-                  {f.username}
-                </li>
-              ))
-            )}
-          </ul>
-          <form onSubmit={handleAddFriend} style={{ marginTop: "1rem" }}>
-            <input
-              type="text"
-              placeholder="Friend ID"
-              value={friendId}
-              onChange={(e) => setFriendId(e.target.value)}
-            />
-            <button type="submit">Add Friend</button>
-          </form>
-        </div>
-
-        {/* Public Chat */}
-        <div className="card">
-          <h2>Public Chat</h2>
-          <div className="messages-box">
-            {publicMessages.length === 0 ? (
-              <p className="empty">No messages yet</p>
-            ) : (
-              <>
-                {publicMessages.map((m, i) => (
-                  <div key={m._id || i} className="message">
-                    <b>{m.sender?.username || "Unknown"}:</b> {m.content}
-                  </div>
-                ))}
-                <div ref={publicMessagesEndRef} />
-              </>
-            )}
-          </div>
-          <form onSubmit={handleSendPublic} className="message-input">
-            <input
-              value={publicMessage}
-              onChange={(e) => setPublicMessage(e.target.value)}
-              onKeyPress={(e) => handleKeyPress(e, handleSendPublic)}
-              placeholder="Type a message"
-            />
-            <button type="submit">Send</button>
-          </form>
-        </div>
-
-        {/* DM Chat */}
-        <div className="card">
+      {/* Main Content */}
+      <div className="main-content">
+        <div className="content-header">
           <h2>
-            DM Chat{" "}
-            {dmUser && `(with ${friends.find((f) => f._id === dmUser)?.username})`}
+            {activeView === "global"
+              ? "🌍 Global Chat"
+              : activeView === "friends"
+              ? "👥 Friends & Add Friends"
+              : `💬 DM with ${
+                  friends.find((f) => f._id === dmUser)?.username
+                }`}
           </h2>
-          <div className="messages-box">
-            {!dmUser ? (
-              <p className="empty">Select a friend to start chatting</p>
-            ) : dmMessages.length === 0 ? (
-              <p className="empty">No messages yet</p>
-            ) : (
-              <>
-                {dmMessages.map((m, i) => (
-                  <div key={m._id || i} className="message">
-                    <b>{m.sender.username}:</b> {m.content}
-                  </div>
-                ))}
-                <div ref={dmMessagesEndRef} />
-              </>
-            )}
-          </div>
-          <form onSubmit={handleSendDM} className="message-input">
-            <input
-              value={dmMessage}
-              onChange={(e) => setDmMessage(e.target.value)}
-              onKeyPress={(e) => handleKeyPress(e, handleSendDM)}
-              placeholder="Type a message"
-              disabled={!dmUser}
-            />
-            <button type="submit" disabled={!dmUser}>
-              Send
-            </button>
-          </form>
+        </div>
+
+        <div className="content-body">
+          {/* Global Chat View */}
+          {activeView === "global" && (
+            <div className="chat-container">
+              <div className="messages-area">
+                {publicMessages.length === 0 ? (
+                  <p className="empty">No messages yet. Start chatting!</p>
+                ) : (
+                  <>
+                    {publicMessages.map((m, i) => (
+                      <div key={m._id || i} className="message">
+                        <b>{m.sender?.username || "Unknown"}:</b> {m.content}
+                      </div>
+                    ))}
+                    <div ref={publicMessagesEndRef} />
+                  </>
+                )}
+              </div>
+              <div className="message-input-container">
+                <form
+                  onSubmit={handleSendPublic}
+                  className="message-input-form"
+                >
+                  <input
+                    value={publicMessage}
+                    onChange={(e) => setPublicMessage(e.target.value)}
+                    onKeyPress={(e) => handleKeyPress(e, handleSendPublic)}
+                    placeholder="Type your message..."
+                  />
+                  <button type="submit" className="send-btn">
+                    Send
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* Friends View */}
+          {activeView === "friends" && (
+            <div className="friends-container">
+              <div className="add-friend-form">
+                <input
+                  type="text"
+                  placeholder="Enter Friend ID"
+                  value={friendId}
+                  onChange={(e) => setFriendId(e.target.value)}
+                />
+                <button onClick={handleAddFriend}>Add Friend</button>
+              </div>
+
+              <ul className="friends-list">
+                {friends.length === 0 ? (
+                  <li className="empty">No friends yet. Add some friends!</li>
+                ) : (
+                  friends.map((f) => (
+                    <li
+                      key={f._id}
+                      className={`friend-card ${
+                        dmUser === f._id ? "active" : ""
+                      }`}
+                      onClick={() => handleSelectDM(f)}
+                    >
+                      <div className="friend-name">👤 {f.username}</div>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          )}
+
+          {/* DM Chat View */}
+          {activeView === "dm" && (
+            <div className="chat-container">
+              <div className="messages-area">
+                {!dmUser ? (
+                  <p className="empty">Select a friend to start chatting</p>
+                ) : dmMessages.length === 0 ? (
+                  <p className="empty">
+                    No messages yet. Start a conversation!
+                  </p>
+                ) : (
+                  <>
+                    {dmMessages.map((m, i) => (
+                      <div key={m._id || i} className="message">
+                        <b>{m.sender.username}:</b> {m.content}
+                      </div>
+                    ))}
+                    <div ref={dmMessagesEndRef} />
+                  </>
+                )}
+              </div>
+              <div className="message-input-container">
+                <form onSubmit={handleSendDM} className="message-input-form">
+                  <input
+                    value={dmMessage}
+                    onChange={(e) => setDmMessage(e.target.value)}
+                    onKeyPress={(e) => handleKeyPress(e, handleSendDM)}
+                    placeholder="Type your message..."
+                    disabled={!dmUser}
+                  />
+                  <button type="submit" className="send-btn" disabled={!dmUser}>
+                    Send
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

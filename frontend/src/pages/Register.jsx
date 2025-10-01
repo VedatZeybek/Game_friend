@@ -2,6 +2,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "./Register.css";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -51,6 +52,12 @@ export default function Register() {
         />
         <button type="submit">Register</button>
       </form>
+      <button 
+        className="back-login-btn"
+        onClick={() => navigate("/")}
+      >
+        Back to Login
+      </button>
     </div>
   );
 }

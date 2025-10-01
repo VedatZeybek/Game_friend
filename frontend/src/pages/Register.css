@@ -1,0 +1,110 @@
+/* Register.css */
+
+body, html {
+min-width: 100vw;
+min-height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+position: relative;
+}
+
+.form-container {
+	display: flex;
+  flex-direction: column; /* dikey sıralama */
+  gap: 3rem; /* her input ve buton arasında boşluk */
+  min-width: 600px;
+  min-height: 400px;
+  margin: 5rem auto;
+  padding: 2rem;
+  background: #1f1b2e; /* koyu gri-mor arası arka plan */
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  color: #f0e6ff; /* açık mor / beyaz arası yazı rengi */
+  font-family: 'Poppins', sans-serif;
+}
+
+.form-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #d9b3ff; /* başlık için hafif mor */
+  font-size: 1.8rem;
+}
+
+.form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-container input {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #5e3b8a; /* koyu mor sınır */
+  background: #2a243d; /* input arka planı */
+  color: #f0e6ff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-container input::placeholder {
+  color: #c3b0ff; /* hafif mor placeholder */
+}
+
+.form-container input:focus {
+  outline: none;
+  border-color: #a974ff; /* odaklanınca parlak mor */
+  box-shadow: 0 0 10px rgba(169, 116, 255, 0.5);
+}
+
+.form-container button {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  display: block;      /* buton blok seviyesinde olmalı */
+  margin: 1rem auto 0; /* üst boşluk 1rem, yanlar otomatik, alt 0 */
+  width: 60%;
+  border: none;
+  background: linear-gradient(135deg, #8e2de2, #4a00e0); /* mor gradyan */
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form-container button:hover {
+  background: linear-gradient(135deg, #a974ff, #6b1fff); /* hover efekti */
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(107, 31, 255, 0.4);
+}
+
+@media (max-width: 500px) {
+  .form-container {
+    margin: 2rem 1rem;
+    padding: 1.5rem;
+  }
+}
+
+
+/* Register.css içinde en alta ekle */
+.back-login-btn {
+  display: block;      /* buton blok seviyesinde olmalı */
+  margin: 1rem auto 0; /* üst boşluk 1rem, yanlar otomatik, alt 0 */
+  width: 20%;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  border: none;
+  background: #5e3b8a;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-login-btn:hover {
+  background: #8e2de2; /* hover mor */
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(142, 45, 226, 0.4);
+}
