@@ -11,7 +11,10 @@
   color: #fff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
-  position: relative;
+  flex-direction: row;
+  align-items: self-start;
+  justify-content: left;
+ /* position: relative;*/
   overflow: hidden;
 }
 
@@ -61,9 +64,10 @@
   border-right: 1px solid rgba(138, 43, 226, 0.2);
   display: flex;
   flex-direction: column;
-  position: relative;
+  position: relative; /* relative ile z-index çalışır */
   z-index: 10;
   box-shadow: 5px 0 30px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0; /* sidebar küçülmesin */
 }
 
 .sidebar-header {
@@ -110,6 +114,12 @@
   flex: 1;
   padding: 20px 0;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* içerik en alttan başlar */
+    margin-top: auto; /* menüyü aşağı iter */
+
+
 }
 
 .menu-item {
@@ -182,11 +192,12 @@
 
 /* Ana İçerik */
 .main-content {
-  flex: 1;
+  flex: 1; /* sidebar dışında kalan alanı kapla */
   display: flex;
   flex-direction: column;
   position: relative;
   z-index: 5;
+  overflow: hidden; /* içerik taşmasın */
 }
 
 .content-header {
@@ -221,6 +232,31 @@
   border: 1px solid rgba(138, 43, 226, 0.2);
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* chat kutusunun container yüksekliği */
+  max-height: 500px; /* istersen sabit maksimum yükseklik */
+  border: 1px solid #5e3b8a;
+  border-radius: 8px;
+  background: #1f1b2e;
+}
+
+/* scroll bar stilini istersen customize edebilirsin */
+.messages-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages-area::-webkit-scrollbar-thumb {
+  background-color: #8e2de2;
+  border-radius: 3px;
+}
+
+.message-input-container {
+  border-top: 1px solid #5e3b8a;
+  padding: 0.5rem;
 }
 
 /* Messages Area */
