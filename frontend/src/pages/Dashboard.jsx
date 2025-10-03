@@ -41,14 +41,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (showProfile && profileRef.current && !profileRef.current.contains(e.target)) {
-        setShowProfile(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    // profile click outside handling removed; profile is now a global component
   }, [showProfile]);
 
   useEffect(() => {
@@ -384,44 +377,7 @@ export default function Dashboard() {
               ? `🎮 ${activeGame?.name} Chat`
               : "🎮 Games"}
             </h2>
-            <div>
-              <div style={{position: 'relative'}} ref={profileRef}>
-                <button
-                  className="profile-btn"
-                  onClick={() => setShowProfile((s) => !s)}
-                  title="Profile"
-                >
-                  <span className="profile-avatar">
-                    {user?.username ? user.username.charAt(0).toUpperCase() : "U"}
-                  </span>
-                  <span style={{fontWeight: 600}}>{user?.username || "User"}</span>
-                </button>
-                {showProfile && (
-                  <div className="profile-panel">
-                    <div className="profile-large">
-                      <div className="avatar-lg">
-                        {user?.username ? user.username.charAt(0).toUpperCase() : "U"}
-                      </div>
-                      <div>
-                        <p style={{margin:0, fontWeight:700}}>{user?.username || "User"}</p>
-                        <p style={{margin:0, color:'#9ca3af', fontSize:12}}>ID: {user?._id || "-"}</p>
-                      </div>
-                    </div>
-                    <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                      <button
-                        className="copy-btn"
-                        onClick={() => {
-                          const uid = getUserId();
-                          if (uid) navigator.clipboard.writeText(uid);
-                        }}
-                      >
-                        Copy ID
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+            <div />
           </div>
         </div>
 

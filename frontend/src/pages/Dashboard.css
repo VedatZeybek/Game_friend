@@ -69,6 +69,10 @@
   box-shadow: 5px 0 30px rgba(0, 0, 0, 0.3);
   flex-shrink: 0; /* sidebar küçülmesin */
   justify-content: space-between; /* header at top, footer at bottom */
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
 
 }
 
@@ -201,6 +205,11 @@
   overflow: hidden; /* içerik taşmasın */
 }
 
+/* push the main content to the right to make room for fixed sidebar */
+.main-content {
+  margin-left: 280px;
+}
+
 .content-header {
   padding: 30px 40px;
   background: rgba(30, 30, 45, 0.7);
@@ -238,6 +247,16 @@
   color: white;
 }
 
+.profile-container {
+  position: fixed;
+  top: 12px;
+  right: 20px;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .copy-id-btn {
   background: transparent;
   border: 1px solid rgba(255,255,255,0.06);
@@ -261,9 +280,9 @@
 }
 
 .profile-panel {
-  position: absolute;
-  right: 40px;
-  top: 80px;
+  position: fixed;
+  right: 20px;
+  top: 56px;
   background: rgba(20,20,30,0.95);
   border: 1px solid rgba(138,43,226,0.12);
   padding: 12px 14px;
@@ -595,6 +614,7 @@
 /* Responsive */
 @media (max-width: 768px) {
   .sidebar {
+    position: relative;
     width: 70px;
   }
   

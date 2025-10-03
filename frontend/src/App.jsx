@@ -2,12 +2,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Dashboard from "./pages/Dashboard";
+import ProfileButton from "./components/ProfileButton";
 
 function App() {
   const isLoggedIn = !!localStorage.getItem("token"); // token varsa login olmuş demek
 
   return (
     <Router>
+      <ProfileButton />
       <Routes>
         <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
