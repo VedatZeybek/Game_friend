@@ -68,6 +68,8 @@
   z-index: 10;
   box-shadow: 5px 0 30px rgba(0, 0, 0, 0.3);
   flex-shrink: 0; /* sidebar küçülmesin */
+  justify-content: space-between; /* header at top, footer at bottom */
+
 }
 
 .sidebar-header {
@@ -116,11 +118,10 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* içerik en alttan başlar */
-    margin-top: auto; /* menüyü aşağı iter */
-
-
+  justify-content: flex-start; /* start under header */
+  margin-top: 0;
 }
+
 
 .menu-item {
   padding: 15px 25px;
@@ -205,6 +206,106 @@
   background: rgba(30, 30, 45, 0.7);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+}
+
+.content-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profile-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(138,43,226,0.12);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.profile-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+}
+
+.copy-id-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #d1d5db;
+  padding: 4px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  background: rgba(34,197,94,0.95);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  z-index: 60;
+}
+
+.profile-panel {
+  position: absolute;
+  right: 40px;
+  top: 80px;
+  background: rgba(20,20,30,0.95);
+  border: 1px solid rgba(138,43,226,0.12);
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  z-index: 50;
+  min-width: 220px;
+}
+
+.profile-panel .profile-large {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.profile-panel .profile-large .avatar-lg {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: white;
+  font-size: 20px;
+}
+
+.profile-panel p {
+  color: #d1d5db;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.copy-btn {
+  background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+  border: none;
+  color: white;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .content-header h2 {

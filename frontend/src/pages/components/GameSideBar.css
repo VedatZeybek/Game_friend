@@ -1,0 +1,74 @@
+/* GameSideBar.css */
+.games-sidebar {
+  padding: 20px;
+  background: rgba(30, 30, 45, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(138, 43, 226, 0.12);
+}
+
+.games-sidebar h3 {
+  color: #e6e6f0;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.games-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.game-card {
+  background: rgba(45, 45, 60, 0.6);
+  border: 1px solid rgba(138, 43, 226, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+}
+
+.game-card.active {
+  border-color: #a855f7;
+  box-shadow: 0 12px 30px rgba(168,85,247,0.12);
+}
+
+.game-img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  display: block;
+}
+
+.game-info {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.game-name {
+  font-weight: 700;
+  color: #fff;
+  font-size: 14px;
+}
+
+.game-platforms {
+  color: #b9b9cc;
+  font-size: 12px;
+}
+
+@media (max-width: 600px) {
+  .games-list {
+    grid-template-columns: 1fr 1fr;
+  }
+  .game-img {
+    height: 90px;
+  }
+}

@@ -37,16 +37,32 @@ router.get("/dm/:userId", authMiddleware, async (req, res) => {
   }
 });
 
+// Game chat messages
+router.get("/game/:gameId", authMiddleware, async (req, res) => {
+  const { gameId } = req.params;
+  try {
+    const messages = await Message.find({ isGame: true, gameId })
+      .populate("sender", "username")
+      .sort({ createdAt: 1 });
+    res.json(messages);
+  } catch (err) {
+    console.error("Game messages fetch error:", err);
+    res.status(500).json({ message: "Failed to fetch game messages" });
+  }
+});
+
 // Mesaj gönderme (public veya DM)
 router.post("/send", authMiddleware, async (req, res) => {
-  const { content, receiverId, isPublic } = req.body;
+  const { content, receiverId, isPublic, isGame, gameId } = req.body;
 
   try {
     const message = await Message.create({
       sender: req.user._id,
       receiver: receiverId || null,
+      gameId: isGame ? gameId : null,
       content,
-      isPublic: isPublic || false
+      isPublic: isPublic || false,
+      isGame: isGame || false
     });
 
     // sender bilgisi ile populate et
